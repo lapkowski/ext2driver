@@ -6,41 +6,46 @@
 
 ## Requirements
 - A C++20 compatible compiler
-- GNU Make
+- GNU Make/Ninja
+- CMake
+- Clang-Format (optional, but needed for contributing)
 - Cppcheck (optional, for static analysis)
 - e2fsprogs (optional, for generating test images)
+- Nix (optional, for a developer environment)
 
 ## Build
-```
+```sh
+mkdir _build && cd _build
+cmake .. # -DCMAKE_BUILD_TYPE=Debug for debugging
 make
 ```
-You can define `DEBUG` to enable debug mode. This will include additional debug information in the output and error messages.
-```
-make DEBUG=1
+You can also use nix to build the project, or to automatically download the dependencies.
+```sh
+nix develop # For a development shell
+nix build   # For building the project
 ```
 ## Usage
 To get the list of files in a directory:
-```
-_build/query query <IMAGE> <DIRECTORY>
+```sh
+_build/ext2driver query <IMAGE> <DIRECTORY>
 ```
 To extract a file from an image:
-```
-_build/query query <IMAGE> <FILE>
+```sh
+_build/ext2driver get <IMAGE> <FILE>
 ```
 ## Testing
 You can generate a test image by using the make img target.
 This will copy all of the files from the testimgroot directory, and generate an image in BUILD_DIR/testimg.img
-```
+```sh
 mkdir testimgroot
 echo "Hello World!" > testimgroot/hello.txt
 make img
 _build/query get _build/testimg.img hello.txt
 cat hello.txt
 ```
-You may also use the make check target to run cppcheck on the codebase.
-```
-make check
-cat _build/cppcheck_log.txt
+You may also use the make lint target to run cppcheck on the codebase.
+```sh
+make lint
 ```
 
 ## TODO
