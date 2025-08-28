@@ -279,7 +279,7 @@ class Filesystem
     Inode        root_inode;
 
   public:
-    explicit Filesystem(char* path);
+    explicit Filesystem(const char* path);
     ~Filesystem();
     inline u8* allocate_block() { return (u8*)smalloc(this->block_size); }
     NONNULL(u8*) read_block(u32 block_number, u8* buffer);

@@ -31,7 +31,7 @@ int help(int argc, char** argv)
 
 int add(int argc, char** argv)
 {
-    if (argc != 2 && argc != 3) {
+    if (argc != 3 && argc != 4) {
         printf("USAGE: %s add <IMAGE> <FROM> <TO (defaults to /)>\n", argv[-1]);
         exit(0);
     }

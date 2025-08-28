@@ -12,7 +12,7 @@
 #define EXT2_SUPERBLOCK_SIZE 1024
 #define EXT2_ROOT_INODE      2
 
-Filesystem::Filesystem(char* path)
+Filesystem::Filesystem(const char* path)
 {
     this->file.exceptions(std::ios::failbit | std::ios::badbit | std::ios::eofbit);
     this->file.open(path, std::fstream::in | std::fstream::out | std::fstream::binary);
