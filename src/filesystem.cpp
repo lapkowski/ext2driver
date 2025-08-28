@@ -21,16 +21,11 @@ Filesystem::Filesystem(const char* path)
 
     this->superblock.validate();
 
-    DBG("Succesfully mounted %s!\n", path);
-    DBG(SuperBlock_dbg(this->superblock));
-
     if (this->superblock.version_major >= 1) {
         this->file.read((char*)&this->e_superblock, sizeof(ExSuperBlock));
 
         this->e_superblock_present = true;
         this->e_superblock.validate();
-
-        DBG(ExSuperBlock_dbg(this->e_superblock));
     }
 
     this->block_groups = ceil((double)this->superblock.total_blocks / (double)this->superblock.blocks_in_block_group);
@@ -40,8 +35,6 @@ Filesystem::Filesystem(const char* path)
     this->read_bgds();
 
     this->read_inode(Inode::ROOT_INODE, &this->root_inode);
-
-    DBG(Filesystem_dbg((*this)));
 }
 
 void Filesystem::read_bgds()
@@ -53,8 +46,6 @@ void Filesystem::read_bgds()
     this->file.seekg(offset);
 
     this->file.read(reinterpret_cast<char*>(this->bgds), sizeof(BGD) * this->block_groups);
-
-    for (usize i = 0; i < this->block_groups; i++) { DBG(BGD_dbg(this->bgds[i])); }
 }
 
 void Filesystem::read_inode(u32 inode_id, Inode* buffer)
@@ -65,14 +56,10 @@ void Filesystem::read_inode(u32 inode_id, Inode* buffer)
     usize offset = (this->superblock.superblock_block_number + bgd.inode_table_address) * this->block_size;
     offset += group_index * this->inode_size;
 
-    DBG("Reading inode %ud at %ju(%ju)\n", inode_id, offset, group_index);
-
     if (!buffer) buffer = (Inode*)smalloc(sizeof(Inode));
 
     this->file.seekg(offset);
     this->file.read(reinterpret_cast<char*>(buffer), sizeof(Inode));
-
-    DBG(Inode_dbg((*reinterpret_cast<Inode*>(buffer))));
 }
 
 NONNULL(u8*) Filesystem::read_block(u32 block_address, u8* buffer)
@@ -97,8 +84,6 @@ void Filesystem::get_inode_from_path(const std::filesystem::path& path, Inode* i
         if (path_element == "/") continue;
         bool found = false;
         for (DirectoryEntry* entry : dir_iter) {
-            DBG("Searching for %s\n", path_element.filename().c_str());
-
             if (entry->name(this) == path_element) {
                 this->read_inode(entry->inode, inode);
                 found = true;
