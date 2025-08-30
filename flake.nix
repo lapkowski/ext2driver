@@ -21,6 +21,7 @@
                     valgrind 
                     gdb 
                     pkg-config 
+                    nlohmann_json
                 ];
             in with pkgs; rec {
                 devShell = mkShell {
