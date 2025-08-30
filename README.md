@@ -10,13 +10,14 @@
 - CMake
 - Clang-Format (optional, but needed for contributing)
 - Cppcheck (optional, for static analysis)
-- e2fsprogs (optional, for generating test images)
+- Python 3 (optional, for running the test suite)
+- e2fsprogs (optional, for running the test suite)
 - Nix (optional, for a developer environment)
 
 ## Build
 ```sh
 mkdir _build && cd _build
-cmake .. # -DCMAKE_BUILD_TYPE=Debug for debugging
+cmake .. # -DCMAKE_BUILD_TYPE=Debug for debugging -DTESTS=ON for test compilation
 make
 ```
 You can also use nix to build the project, or to automatically download the dependencies.
@@ -34,15 +35,11 @@ To extract a file from an image:
 _build/ext2driver get <IMAGE> <FILE>
 ```
 ## Testing
-You can generate a test image by using the make img target.
-This will copy all of the files from the testimgroot directory, and generate an image in BUILD_DIR/testimg.img
-```sh
-mkdir testimgroot
-echo "Hello World!" > testimgroot/hello.txt
-make img
-_build/query get _build/testimg.img hello.txt
-cat hello.txt
+You can run driver tests using ctest (Note that the TESTS option must be ON while configuring)
+``` sh
+ctest --output-on-failure .
 ```
+
 You may also use the make lint target to run cppcheck on the codebase.
 ```sh
 make lint
